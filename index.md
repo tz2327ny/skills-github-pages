@@ -1,3 +1,404 @@
----
-title: Welcome to my blog!
----
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fire Training Heat & Air Quality Index</title>
+  <style>
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background-color: #f9f9f9;
+      color: #333;
+      margin: 2rem auto;
+      max-width: 800px;
+      padding: 2rem;
+      border: 1px solid #ccc;
+      background: white;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    h1, h2, h3 {
+      color: #003366;
+    }
+    label {
+      display: block;
+      margin-top: 1em;
+      font-weight: bold;
+    }
+    select, input, button {
+      padding: 0.5em;
+      font-size: 1em;
+      margin-top: 0.5em;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .time-group {
+      display: flex;
+      gap: 0.5em;
+      margin-top: 0.5em;
+    }
+    .time-group select {
+      flex: 1;
+    }
+    button {
+      width: 100%;
+      background-color: #003366;
+      color: white;
+      border: none;
+      cursor: pointer;
+      margin-top: 1em;
+    }
+    button:hover {
+      background-color: #00509e;
+    }
+    .result {
+      margin-top: 2em;
+      padding: 1em;
+      border: 1px solid #ccc;
+      background-color: #f1f1f1;
+    }
+    .error {
+      color: red;
+      font-weight: bold;
+      margin-top: 1em;
+    }
+    .low-risk { color: green; }
+    .caution  { color: #e69800; }
+    .danger   { color: #ff5e00; }
+    .extreme  { color: red; }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 1em;
+    }
+    th, td {
+      border: 1px solid #000;
+      padding: 0.5em;
+      text-align: center;
+    }
+    /* Highlight the Weather column header so it’s obvious */
+    th.weather-col {
+      background-color: #eef;
+    }
+    td.weather-col {
+      background-color: #eef;
+    }
+    ul {
+      padding-left: 1em;
+      margin-top: 1em;
+    }
+    li {
+      margin-bottom: 0.5em;
+    }
+    .citation {
+      font-size: 0.85em;
+      color: #555;
+      margin-top: 1.5em;
+      border-top: 1px solid #ccc;
+      padding-top: 0.5em;
+    }
+    .table-container {
+      overflow-x: auto;
+    }
+  </style>
+</head>
+<body>
+  <h1>Fire Training Heat & Air Quality Index</h1>
+
+  <form id="infoForm">
+    <label for="date">Date:</label>
+    <input type="date" id="date" required />
+
+    <label>Start Time:</label>
+    <div class="time-group">
+      <select id="startHour" required>
+        <option value="">Hour</option>
+        <option value="00">00</option>
+        <option value="01">01</option>
+        <option value="02">02</option>
+        <option value="03">03</option>
+        <option value="04">04</option>
+        <option value="05">05</option>
+        <option value="06">06</option>
+        <option value="07">07</option>
+        <option value="08">08</option>
+        <option value="09">09</option>
+        <option value="10">10</option>
+        <option value="11">11</option>
+        <option value="12">12</option>
+        <option value="13">13</option>
+        <option value="14">14</option>
+        <option value="15">15</option>
+        <option value="16">16</option>
+        <option value="17">17</option>
+        <option value="18">18</option>
+        <option value="19">19</option>
+        <option value="20">20</option>
+        <option value="21">21</option>
+        <option value="22">22</option>
+        <option value="23">23</option>
+      </select>
+      <select id="startMinute" required>
+        <option value="">Minute</option>
+        <option value="00">00</option>
+        <option value="15">15</option>
+        <option value="30">30</option>
+        <option value="45">45</option>
+      </select>
+    </div>
+
+    <label>End Time:</label>
+    <div class="time-group">
+      <select id="endHour" required>
+        <option value="">Hour</option>
+        <option value="00">00</option>
+        <option value="01">01</option>
+        <option value="02">02</option>
+        <option value="03">03</option>
+        <option value="04">04</option>
+        <option value="05">05</option>
+        <option value="06">06</option>
+        <option value="07">07</option>
+        <option value="08">08</option>
+        <option value="09">09</option>
+        <option value="10">10</option>
+        <option value="11">11</option>
+        <option value="12">12</option>
+        <option value="13">13</option>
+        <option value="14">14</option>
+        <option value="15">15</option>
+        <option value="16">16</option>
+        <option value="17">17</option>
+        <option value="18">18</option>
+        <option value="19">19</option>
+        <option value="20">20</option>
+        <option value="21">21</option>
+        <option value="22">22</option>
+        <option value="23">23</option>
+      </select>
+      <select id="endMinute" required>
+        <option value="">Minute</option>
+        <option value="00">00</option>
+        <option value="15">15</option>
+        <option value="30">30</option>
+        <option value="45">45</option>
+      </select>
+    </div>
+
+    <label for="zip">ZIP Code:</label>
+    <input type="text" id="zip" required placeholder="e.g., 12345" pattern="\d{5}" />
+
+    <label for="sunlight">Will the training be in direct sunlight?</label>
+    <select id="sunlight" required>
+      <option value="">Select...</option>
+      <option value="yes">Yes</option>
+      <option value="no">No</option>
+    </select>
+
+    <label for="ppe">Will PPE be worn?</label>
+    <select id="ppe" required>
+      <option value="">Select...</option>
+      <option value="yes">Yes</option>
+      <option value="no">No</option>
+    </select>
+
+    <button type="submit">Get Weather & AQI</button>
+  </form>
+
+  <div class="result" id="results" style="display:none;"></div>
+  <button id="printBtn" style="display:none;">Download PDF</button>
+  <div id="error" class="error" style="display:none;"></div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const AIRNOW_API_KEY = "D004FF81-86C2-4C91-8CCC-9C307BDA5148";
+
+      async function fetchLatLonFromZip(zip) {
+        const res = await fetch(`https://api.zippopotam.us/us/${zip}`, { mode: "cors" });
+        if (!res.ok) throw new Error("Invalid ZIP code or service unavailable");
+        const data = await res.json();
+        const place = data.places[0];
+        return { lat: parseFloat(place.latitude), lon: parseFloat(place.longitude) };
+      }
+
+      function calculateHeatIndex(tempF, humidity) {
+        return (
+          -42.379 +
+          2.04901523 * tempF +
+          10.14333127 * humidity -
+          0.22475541 * tempF * humidity -
+          0.00683783 * tempF * tempF -
+          0.05481717 * humidity * humidity +
+          0.00122874 * tempF * tempF * humidity +
+          0.00085282 * tempF * humidity * humidity -
+          0.00000199 * tempF * tempF * humidity * humidity
+        );
+      }
+
+      document.getElementById("infoForm").addEventListener("submit", async (event) => {
+        event.preventDefault();
+        document.getElementById("results").style.display = "none";
+        document.getElementById("printBtn").style.display = "none";
+        document.getElementById("error").style.display = "none";
+
+        const zip       = document.getElementById("zip").value.trim();
+        const date      = document.getElementById("date").value;
+        const startHour = document.getElementById("startHour").value;
+        const startMin  = document.getElementById("startMinute").value;
+        const endHour   = document.getElementById("endHour").value;
+        const endMin    = document.getElementById("endMinute").value;
+        const sunlight  = document.getElementById("sunlight").value;
+        const ppe       = document.getElementById("ppe").value;
+
+        if (!zip || !date || !startHour || !startMin || !endHour || !endMin || !sunlight || !ppe) {
+          document.getElementById("error").textContent = "Please fill out every field.";
+          document.getElementById("error").style.display = "block";
+          return;
+        }
+
+        const startTime = `${startHour}:${startMin}`;
+        const endTime   = `${endHour}:${endMin}`;
+        if (startTime >= endTime) {
+          document.getElementById("error").textContent = "Start time must be before end time.";
+          document.getElementById("error").style.display = "block";
+          return;
+        }
+
+        try {
+          // 1) ZIP → lat/lon
+          const { lat, lon } = await fetchLatLonFromZip(zip);
+
+          // 2) Fetch hourly forecast from weather.gov
+          const nwsRes = await fetch(`https://api.weather.gov/points/${lat},${lon}`, { mode: "cors" });
+          if (!nwsRes.ok) throw new Error("Weather.gov lookup failed");
+          const nwsData = await nwsRes.json();
+          const forecastUrl = nwsData.properties.forecastHourly;
+
+          const hourlyRes = await fetch(forecastUrl, { mode: "cors" });
+          if (!hourlyRes.ok) throw new Error("Failed to fetch hourly forecast");
+          const hourlyData = await hourlyRes.json();
+
+          // 3) Fetch AQI (100-mile radius)
+          let currentAQI = "N/A";
+          try {
+            const aqiUrl =
+              `https://www.airnowapi.org/aq/observation/zipCode/current/` +
+              `?format=application/json&zipCode=${zip}&distance=100&api_key=${AIRNOW_API_KEY}`;
+            const aqiRes = await fetch(aqiUrl, { mode: "cors" });
+            if (!aqiRes.ok) throw new Error(`AirNow returned ${aqiRes.status}`);
+            const aqiData = await aqiRes.json();
+            if (Array.isArray(aqiData) && aqiData.length) {
+              const pm25  = aqiData.find(a => a.ParameterName === "PM2.5");
+              const ozone = aqiData.find(a => a.ParameterName === "O3");
+              const chosen = pm25 || ozone || aqiData[0];
+              currentAQI = `${chosen.ParameterName}: ${chosen.AQI} (${chosen.Category.Name})`;
+            } else {
+              currentAQI = "No AQI data available for this ZIP code";
+            }
+          } catch {
+            currentAQI = "AQI data temporarily unavailable";
+          }
+
+          // 4) Filter hourly periods to chosen date
+          const hourlyForDate = hourlyData.properties.periods.filter(p => {
+            return p.startTime.slice(0, 10) === date;
+          });
+
+          console.log("hourlyForDate:", hourlyForDate);
+
+          // 5) Build table of 15-min slots within start/end
+          let output = `<h3>Air Quality Index</h3><p>${currentAQI}</p><h3>Heat Index Estimates (15-min)</h3>`;
+          output += `<div class="table-container"><table><thead><tr>
+            <th>Time</th><th class="weather-col">Weather</th><th>Heat Index</th><th>Adjusted (Sunlight & PPE)</th><th>Risk Level</th>
+          </tr></thead><tbody>`;
+
+          hourlyForDate.forEach(p => {
+            console.log("slot being processed:", p.startTime, p.shortForecast);
+            const hour24      = p.startTime.slice(11, 13);
+            const temperature = p.temperature;
+            const humidity    = p.relativeHumidity.value;
+
+            ["00","15","30","45"].forEach(minPart => {
+              const slotTime = `${hour24}:${minPart}`;
+              if (slotTime < startTime || slotTime > endTime) return;
+
+              const rawHI = calculateHeatIndex(temperature, humidity);
+              let adjHI = rawHI;
+              if (sunlight === "yes") adjHI += 10;
+              if (ppe === "yes")     adjHI += 10;
+
+              let level = "Low", className = "low-risk";
+              if (adjHI >= 115) {
+                level = "Extreme";
+                className = "extreme";
+              } else if (adjHI >= 105) {
+                level = "High";
+                className = "danger";
+              } else if (adjHI >= 90) {
+                level = "Medium";
+                className = "caution";
+              }
+
+              output += `<tr class="${className}">
+                <td>${slotTime}</td>
+                <td class="weather-col">${p.shortForecast}</td>
+                <td>${rawHI.toFixed(1)}°F</td>
+                <td>${adjHI.toFixed(1)}°F</td>
+                <td>${level}</td>
+              </tr>`;
+            });
+          });
+
+          output += `</tbody></table></div>`;
+
+          // 6) Environmental Hazard Policy (always shown)
+          output += `<h3>Environmental Hazard Policy</h3><ul>`;
+          output += `<li class='low-risk'><strong>Low:</strong> Normal monitoring. Ensure proper hydration.</li>`;
+          output += `<li class='caution'><strong>Medium:</strong> Provide rehab & active cooling; limit intense work to 20 min/hr.</li>`;
+          output += `<li class='danger'><strong>High:</strong> Postpone/reschedule live-fire or chemical-protective training.</li>`;
+          output += `<li class='extreme'><strong>Extreme:</strong> All outdoor or unconditioned-space skills training postponed.</li>`;
+          output += `</ul>`;
+
+          // 7) Data source citations
+          output += `
+            <div class="citation">
+              Data sources:
+              <ul>
+                <li>Temperature & Humidity: <a href="https://www.weather.gov" target="_blank" rel="noopener">National Weather Service (weather.gov)</a></li>
+                <li>Air Quality Index: <a href="https://www.airnow.gov" target="_blank" rel="noopener">AirNow.gov</a></li>
+              </ul>
+            </div>`;
+
+          document.getElementById("results").innerHTML = output;
+          document.getElementById("results").style.display = "block";
+          document.getElementById("printBtn").style.display = "inline-block";
+        } catch (err) {
+          document.getElementById("error").textContent = err.message || "Unexpected error.";
+          document.getElementById("error").style.display = "block";
+        }
+      });
+
+      // Print-to-PDF button
+      document.getElementById("printBtn").addEventListener("click", () => {
+        const printWindow = window.open("", "", "width=900,height=650");
+        printWindow.document.write("<html><head><title>Fire Weather Report</title>");
+        printWindow.document.write(`
+          <style>
+            body { font-family: Arial; padding: 1em; }
+            table { border-collapse: collapse; width: 100%; }
+            th, td { padding: 0.5em; border: 1px solid #000; text-align: center; }
+            ul { padding-left: 1em; }
+            li { margin-bottom: 0.5em; }
+            .citation { font-size: 0.85em; color: #555; margin-top: 1.5em; border-top: 1px solid #ccc; padding-top: 0.5em; }
+            th.weather-col, td.weather-col { background-color: #eef; }
+          </style>`);
+        printWindow.document.write("</head><body>");
+        printWindow.document.write(document.getElementById("results").innerHTML);
+        printWindow.document.write("</body></html>");
+        printWindow.document.close();
+        printWindow.print();
+      });
+    });
+  </script>
+</body>
+</html>
+
